@@ -1,5 +1,5 @@
 export CUDA_VISIBLE_DEVICES=1,2,3
-DATA_DIR=data/CoNLL2003/NER-en
+DATA_DIR=CharBERT/data/CoNLL2003
 MODEL_DIR=data/model/charbert-pretrain
 OUTPUT_DIR=model/output/ner
 python run_ner.py --data_dir ${DATA_DIR} \
