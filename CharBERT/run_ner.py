@@ -64,7 +64,6 @@ def set_seed(args):
     if args.n_gpu > 0:
         torch.cuda.manual_seed_all(args.seed)
 
-
 def train(args, train_dataset, model, tokenizer, labels, pad_token_label_id):
     """ Train the model """
     if args.local_rank in [-1, 0]:
@@ -195,7 +194,6 @@ def train(args, train_dataset, model, tokenizer, labels, pad_token_label_id):
 
     return global_step, tr_loss / global_step
 
-
 def evaluate(args, model, tokenizer, labels, pad_token_label_id, mode, prefix=""):
     eval_dataset = load_and_cache_examples(args, tokenizer, labels, pad_token_label_id, mode=mode)
 
@@ -272,7 +270,6 @@ def evaluate(args, model, tokenizer, labels, pad_token_label_id, mode, prefix=""
 
     return results, preds_list
 
-
 def load_and_cache_examples(args, tokenizer, labels, pad_token_label_id, mode):
     if args.local_rank not in [-1, 0] and not evaluate:
         torch.distributed.barrier()  # Make sure only the first process in distributed training process the dataset, and the others will use the cache
@@ -322,7 +319,6 @@ def load_and_cache_examples(args, tokenizer, labels, pad_token_label_id, mode):
 
     dataset = TensorDataset(all_char_ids, start_ids, end_ids, all_input_ids, all_input_mask, all_segment_ids, all_label_ids)
     return dataset
-
 
 def main():
     parser = argparse.ArgumentParser()
@@ -548,7 +544,6 @@ def main():
                         logger.warning("Maximum sequence length exceeded: No prediction for '%s'.", line.split()[0])
 
     return results
-
 
 if __name__ == "__main__":
     main()

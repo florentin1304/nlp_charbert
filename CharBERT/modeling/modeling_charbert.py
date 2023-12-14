@@ -284,7 +284,6 @@ class CharBertModel(BertPreTrainedModel):
         outputs = (sequence_output, pooled_output, char_sequence_output, char_pooled_output) + char_encoder_outputs[1:]  # add hidden_states and attentions if they are here
         return outputs  # sequence_output, pooled_output, (hidden_states), (attentions)
 
-
 class CharBertForQuestionAnswering(BertPreTrainedModel):
     r"""
         **start_positions**: (`optional`) ``torch.LongTensor`` of shape ``(batch_size,)``:
@@ -383,7 +382,6 @@ class CharBertForQuestionAnswering(BertPreTrainedModel):
 
         return outputs  # (loss), start_logits, end_logits, (hidden_states), (attentions)
 
-
 class CharBertForMaskedLM(BertPreTrainedModel):
     r"""
         **masked_lm_labels**: (`optional`) ``torch.LongTensor`` of shape ``(batch_size, sequence_length)``:
@@ -481,7 +479,6 @@ class CharBertForMaskedLM(BertPreTrainedModel):
             outputs = (masked_lm_loss,) + outputs
 
         return outputs  # (masked_lm_loss), (ltr_lm_loss), prediction_scores, (hidden_states), (attentions)
-
 
 class CharBertForTokenClassification(BertPreTrainedModel):
     r"""
@@ -637,7 +634,6 @@ class CharBertForSequenceClassification(BertPreTrainedModel):
             outputs = (loss,) + outputs
 
         return outputs  # (loss), logits, (hidden_states), (attentions)
-
 
 class CharBertForMultipleChoice(BertPreTrainedModel):
     r"""
