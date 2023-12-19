@@ -259,7 +259,9 @@ class TextDataset(Dataset):
         return output_tokens, masked_lm_labels
 
     def create_adv_word(self, orig_token, rng):
-        
+        """
+        Noise injection with a probability given by args.adv_probability
+        """
         token = list(copy.deepcopy(orig_token))
         if len(orig_token) < 4:
             rand_idx = rng.randint(0, 80)
@@ -366,7 +368,7 @@ class TextDataset(Dataset):
 
         if len(self.examples) == 0 or self.current_sample_idx == len(self.examples):
             self.read_nraws()
-            self.current_sample_idx += 1
+            self.current_sample_idx += 1 # puttana merda gestisce out of bound in read_nraws
 
         return self.examples[self.current_sample_idx]
 
