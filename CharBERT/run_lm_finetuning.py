@@ -88,9 +88,9 @@ class TextDataset(Dataset):
         file_raws = 0
         with open(file_path, 'r', encoding="utf-8") as f:
             for _ in f:
-                file_raws += 1
+                file_raws += 1 # num_righe -> si scrive rows dio e poi dio
         self.file_raws = file_raws
-        self.nraws = args.input_nraws
+        self.nraws = args.input_nraws # quante righe leggo ogni volta
         self.shuffle = True
         self.file_path = file_path
         self.finput = open(file_path, encoding="utf-8")
@@ -116,7 +116,7 @@ class TextDataset(Dataset):
                 line =  self.finput.readline()
                 text += line.strip()
                 
-        doc_tokens = tk.word_tokenize(text)
+        doc_tokens = tk.word_tokenize(text) # (?) divide le parole ?
         if self.args.output_debug:
             print(f"doc_tokens : {' '.join(doc_tokens)}")
 
@@ -125,8 +125,10 @@ class TextDataset(Dataset):
         sub_index_to_change = {}
         adv_labels = []
         num_diff = num_same = 0
+        # Per ogni parola
         for idx, token in enumerate(doc_tokens):
             ori_token = copy.deepcopy(token)
+            # Fai noise injection
             if self.rng.random() < self.args.adv_probability:
                 token = self.create_adv_word(token, self.rng)
             if ori_token != token and self.args.output_debug:
@@ -135,13 +137,19 @@ class TextDataset(Dataset):
                 num_diff += 1
             else:
                 num_same += 1
+
+            # subtokens delle parole (stile con ##mma di mamma)
             sub_tokens = []
             if self.args.model_type == 'roberta':
                 sub_tokens = self.tokenizer.tokenize(token, add_prefix_space=True)
             else:
                 sub_tokens = self.tokenizer.tokenize(token)
+            
+            # mappo ad ID
             for sub_w in sub_tokens:
+                # tokenized_tokens[i] è un sub_token ##mma e sub_index_to_orig_token[i] ti da token originale "mamma"
                 sub_index_to_orig_token[len(tokenized_tokens)] = token
+                # se lho modificato
                 if ori_token != token:
                     sub_index_to_change[len(tokenized_tokens)] = True
                     #if ori_token in self.term2ids_dict:
@@ -163,15 +171,18 @@ class TextDataset(Dataset):
                 self.args.mlm_probability, self.tokenizer, self.rng, sub_index_to_change)
         tokenized_text = self.tokenizer.convert_tokens_to_ids(input_tokens)
 
+        ### tokenized_text := lista di id dei token gia mascherati di args.input_nraws righe incollate in una sola stringa
+
         if self.args.output_debug:
             print(f"mask tokens: {' '.join(input_tokens)}")
 
         seq_maxlen = self.block_size - 2
         self.examples = []
+        # i := indice del primo token di ogni blocco
         for i in range(0, len(tokenized_text)-seq_maxlen+1, seq_maxlen): # Truncate in block of block_size
-            input_ids = self.tokenizer.build_inputs_with_special_tokens(tokenized_text[i:i+seq_maxlen])
-            labels = [-1] + mask_labels[i:i+seq_maxlen] + [-1] #For CLS and SEP
-            adv_input_labels = [-1] + adv_labels[i:i+seq_maxlen] + [-1]
+            input_ids = self.tokenizer.build_inputs_with_special_tokens(tokenized_text[i:i+seq_maxlen]) # ci ficca cls e sep come i loro id
+            labels = [-1] + mask_labels[i:i+seq_maxlen] + [-1] #For CLS and SEP   ## original token sotto la maskera
+            adv_input_labels = [-1] + adv_labels[i:i+seq_maxlen] + [-1] # numerino della parola prima del noise
             char_input_ids, start_ids, end_ids = self.build_char_inputs(input_ids, sub_index_to_orig_token, i, self.rng, labels)
             assert len(input_ids) == len(labels)
             assert len(input_ids) == len(adv_input_labels)
@@ -220,6 +231,8 @@ class TextDataset(Dataset):
             # predictions, then just skip this candidate.
             if len(masked_lms) + len(index_set) > num_to_predict:
                 continue
+
+            # Se il token è uno noisato, skippa
             is_any_index_covered = False
             for index in index_set:
                 if index in covered_indexes or sub_index_to_change[index]:
@@ -227,6 +240,8 @@ class TextDataset(Dataset):
                     break
             if is_any_index_covered:
                 continue
+
+            # Solo uno a meno di ##
             for index in index_set:
                 covered_indexes.add(index)
 
@@ -245,7 +260,8 @@ class TextDataset(Dataset):
                         masked_token = vocab_words[rng.randint(0, len(vocab_words) - 1)]
 
                 output_tokens[index] = masked_token
-
+                
+                # Ground truth (???)
                 masked_lms.append(MaskedLmInstance(index=index, label=tokens[index]))
         assert len(masked_lms) <= num_to_predict
         masked_lms = sorted(masked_lms, key=lambda x: x.index)
@@ -255,7 +271,9 @@ class TextDataset(Dataset):
             #masked_lm_positions.append(p.index)
             #masked_lm_labels.append(p.label)
             masked_lm_labels[p.index] = tokenizer.convert_tokens_to_ids(p.label)
-
+        
+        # output_tokens := frase tokenizzata con i mask
+        # masked_lm_lables := -1 per tutti i token non maskerati e true id per i masked
         return output_tokens, masked_lm_labels
 
     def create_adv_word(self, orig_token, rng):
