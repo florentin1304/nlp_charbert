@@ -271,7 +271,7 @@ def convert_examples_to_features(examples,
         assert len(char_ids) == char_maxlen
         assert len(start_ids) == max_seq_length
         assert len(end_ids) == max_seq_length
-        if True:
+        if False:
             print(f"char_ids: {' '.join(map(str, char_ids))}")
             print(f"start_ids: {' '.join(map(str, start_ids))}")
             print(f"end_ids: {' '.join(map(str, end_ids))}")
