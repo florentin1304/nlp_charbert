@@ -18,7 +18,7 @@ path = 'datasets/medical_domain/ner/'
 if not os.path.exists(path):
     os.makedirs(path)
 
-with open('train.txt', 'w') as f:
+with open(path+'train.txt', 'w') as f:
     all_tokens = dataset['train']['tokens']
     all_tags = dataset['train']['ner_tags']
     for tokens, tags in zip(all_tokens, all_tags):
@@ -27,7 +27,7 @@ with open('train.txt', 'w') as f:
         f.write('\n')
 
 # create a txt file for validation set
-with open('val.txt', 'w') as f:
+with open(path+'val.txt', 'w') as f:
     all_tokens = dataset['validation']['tokens']
     all_tags = dataset['validation']['ner_tags']
     for tokens, tags in zip(all_tokens, all_tags):
@@ -36,7 +36,7 @@ with open('val.txt', 'w') as f:
         f.write('\n')
 
 # create a txt file for test set
-with open('test.txt', 'w') as f:
+with open(path+'test.txt', 'w') as f:
     all_tokens = dataset['test']['tokens']
     all_tags = dataset['test']['ner_tags']
     for tokens, tags in zip(all_tokens, all_tags):
