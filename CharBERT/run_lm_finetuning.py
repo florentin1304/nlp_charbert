@@ -79,6 +79,7 @@ def _is_whitespace(c):
 
 class TextDataset(Dataset):
     def __init__(self, tokenizer, args, file_path='train', block_size=512):
+        print(f"file_path: {file_path}")
         assert os.path.isfile(file_path)
         self.char2ids_dict = self.load_line_to_ids_dict(fname=args.char_vocab)
         self.term2ids_dict = self.load_line_to_ids_dict(fname=args.term_vocab)
@@ -467,7 +468,7 @@ def train(args, train_dataset, model, tokenizer):
         try:
             from apex import amp
         except ImportError:
-            raise ImportError("Please install apex from https://www.github.com/nvidia/apex to use fp16 training.")
+            raise ImportError("Please apex from https://www.github.com/nvidia/apex to use fp16 training.")
         model, optimizer = amp.initialize(model, optimizer, opt_level=args.fp16_opt_level)
 
     # multi-gpu training (should be after apex fp16 initialization)
@@ -860,14 +861,17 @@ def main():
 
     # Setup CUDA, GPU & distributed training
     if args.local_rank == -1 or args.no_cuda:
-        device = torch.device("cuda" if torch.cuda.is_available() and not args.no_cuda else "cpu")
+        print("QUI")
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         args.n_gpu = torch.cuda.device_count()
     else:  # Initializes the distributed backend which will take care of sychronizing nodes/GPUs
+        print("QUO")
         torch.cuda.set_device(args.local_rank)
         device = torch.device("cuda", args.local_rank)
         torch.distributed.init_process_group(backend='nccl')
         args.n_gpu = 1
     args.device = device
+    print(f"device DEVICE DEVICE DEVICE DEVICE: {device}")
 
     # Setup logging
     logging.basicConfig(format = '%(asctime)s - %(levelname)s - %(name)s -   %(message)s',
