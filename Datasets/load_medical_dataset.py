@@ -12,7 +12,7 @@ train = full[:train_len]
 val = full[train_len:train_len+val_len]
 test = full[train_len+val_len:]
 
-general_path = 'Datasets/medical_domain/'
+general_path = 'dataset/medical_domain/mlm/'
 
 if not os.path.exists(general_path):
     os.makedirs(general_path)
