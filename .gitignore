@@ -5,8 +5,8 @@ __pycache__/
 Datasets/general
 Datasets/medical_domain
 Datasets/multilingual
-Models/input
-Models/output
+model/input
+model/output
 runs 
 
 
