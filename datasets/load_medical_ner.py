@@ -45,5 +45,7 @@ with open(path+'test.txt', 'w') as f:
         f.write('\n')
 
 with open(path+'labels.txt', 'w') as f:
-    for label in dataset['train'].features['ner_tags'].feature.names:
+    labels = dataset['train'].features['ner_tags'].feature.names
+    for label in labels[:-1]:
         f.write(label + '\n')
+    f.write(labels[-1])
