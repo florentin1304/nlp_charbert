@@ -2,7 +2,11 @@
 __pycache__/
 *.py[cod]
 *$py.class
-Datasets
+Datasets/general
+Datasets/medical_domain
+Datasets/multilingual
+Models/input
+Models/output
 runs 
 
 
