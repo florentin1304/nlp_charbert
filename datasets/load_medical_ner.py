@@ -43,3 +43,7 @@ with open(path+'test.txt', 'w') as f:
         for token, tag in zip(tokens, tags):
             f.write(f'{token} {int_to_key(tag)}\n')
         f.write('\n')
+
+with open(path+'labels.txt', 'w') as f:
+    for label in dataset['train'].features['ner_tags'].feature.names:
+        f.write(label + '\n')
