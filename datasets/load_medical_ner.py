@@ -10,4 +10,4 @@ test = val_test.shard(2, 1)
 dataset['validation'] = val
 dataset['test'] = test
 
-dataset.save_to_disk('dataset/medical_domain/ner')
+dataset.save_to_disk('datasets/medical_domain/ner')
