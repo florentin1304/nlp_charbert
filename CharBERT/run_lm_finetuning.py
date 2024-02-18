@@ -532,7 +532,7 @@ def train(args, train_dataset, model, tokenizer):
             adv_labels = adv_labels.to(args.device)
             model.train()
             outputs = model(char_input_ids, start_ids, end_ids, inputs, masked_lm_labels=labels, adv_labels=adv_labels)
-            if args.output_debug:
+            if True:#args.output_debug:
                 print(f'mask_lm loss: {outputs[0]}')
                 print(f'adv_term loss: {outputs[1]}')
             loss = outputs[0] + outputs[1] # model outputs are always tuple in transformers (see doc)

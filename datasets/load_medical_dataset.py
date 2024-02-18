@@ -2,7 +2,7 @@ import datasets
 import os
 
 dataset = datasets.load_dataset("pubmed_qa", "pqa_unlabeled")
-dataset = dataset['train'].shuffle(seed = 42).select(range(len(dataset["train"])//6)) 
+dataset = dataset['train'].shuffle(seed = 42).select(range(len(dataset["train"])//2)) 
 full = dataset["long_answer"]
 
 train_len = len(full)
